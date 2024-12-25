@@ -1,0 +1,119 @@
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    welcome_text = (
+        "Добро пожаловать в официальный бот олимпиады ВолгаIT! 👋 \n"
+        "Я могу помочь вам с информацией об олимпиаде. \nВыберите, что вас интересует:"
+    )
+    keyboard = [
+        [InlineKeyboardButton("📌 Навигационное меню", callback_data='menu')],
+        [InlineKeyboardButton("📋 Основная информация", callback_data='info')],
+        [InlineKeyboardButton("🛠️ Дисциплины", callback_data='disciplines')],
+        [InlineKeyboardButton("📅 Проведение олимпиады", callback_data='dates')],
+        [InlineKeyboardButton("📘 Пример заданий прошлых лет", callback_data='examples')],
+        [InlineKeyboardButton("📰 Актуальные новости", callback_data='news')],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    if update.message:
+        await update.message.reply_text(welcome_text, reply_markup=reply_markup)
+    elif update.callback_query:
+        await update.callback_query.edit_message_text(welcome_text, reply_markup=reply_markup)
+
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    if query.data == 'menu':
+        menu_text = (
+            "Наши социальные сети:\n"
+            "• [Сайт олимпиады](https://volga-it.org/)\n"
+            "• [Группа VK](https://vk.com/volgait)\n"
+            "• [Telegram-канал](https://t.me/volgait)"
+        )
+        keyboard = [[InlineKeyboardButton("Назад", callback_data='back')]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(menu_text, parse_mode="Markdown", reply_markup=reply_markup)
+
+    elif query.data == 'info':
+        info_text = (
+            "Волга-IT — это международная цифровая олимпиада для школьников и студентов в возрасте от 16 до 23 лет. "
+            "Наша уникальность — задания, основанные на реальных кейсах IT-компаний, с которыми им пришлось столкнуться. "
+            "Попробуй себя в решении рабочих задач и найди компанию мечты!"
+            "\n"
+            "\nЕсли хочешь ознакомиться более подробно с олимпиадой, то основная информация  доступна по [ссылке на презентацию](https://volga-it.org/wp-content/uploads/2024/09/Презентация-о-XV-Международной-олимпиаде-Волга-IT2024.pdf)."
+
+        )
+        keyboard = [[InlineKeyboardButton("Назад", callback_data='back')]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(info_text, parse_mode="Markdown", reply_markup=reply_markup)
+
+    elif query.data == 'disciplines':
+        disciplines_text = (
+            "Дисциплины олимпиады ВолгаIT:\n"
+            "• 1С программирование\n"
+            "• Backend-разработка: Web API\n"
+            "• Web-дизайн\n"
+            "• Автоматизация тестирования (Java)\n"
+            "• Искусственный интеллект и анализ данных\n"
+            "• Мобильные приложения Flutter\n"
+            "• Телекоммуникации и информационная безопасность\n"
+            "\n"
+            "Если хочешь узнать более подробно про каждую дисциплину и о том, какие навыки тебе понадобятся, то [нажимай сюда](https://volga-it.org/disciplines/programming-1c-language/)."
+        )
+        keyboard = [[InlineKeyboardButton("Назад", callback_data='back')]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(disciplines_text, parse_mode="Markdown", reply_markup=reply_markup)
+
+    elif query.data == 'dates':
+        dates_text = (
+            "Олимпиада ВолгаIT проводится в следующие этапы:\n"
+            "\n"
+            "• 1 Этап: Квалификация\n" 
+            "Даты проведения: 05.09.2024 по 28.10.2024\n"
+            "Краткое описание: зарегистрировавшимся участникам нужно пройти тест в личном кабинете. Можно по нескольким интересующим дисциплинам.\n"
+            "\n"
+            "• 2 Этап: Полуфинал\n"
+            "Даты проведения: 13.09.2024 по 28.10.2024\n"
+            "Краткое описание: этап проходит в онлайн-формате. Участники решают домашнее задание по выбранной дисциплине.\n"
+            "\n"
+            "• 3 Этап: Финал\n"
+            "Даты проведения: 25.11.2024 по 29.11.2024\n"
+            "Краткое описание: этап проходит очно в городе Ульяновск. Участники решают задание по дисциплинам.\n"
+        )
+        keyboard = [[InlineKeyboardButton("Назад", callback_data='back')]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(dates_text, reply_markup=reply_markup)
+
+    elif query.data == 'examples':
+        examples_text = (
+            "Пример заданий прошлых лет можно посмотреть по [ссылке](https://volga-it.org/past-tasks-and-solutions/)."
+        )
+        keyboard = [[InlineKeyboardButton("Назад", callback_data='back')]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(examples_text, parse_mode="Markdown", reply_markup=reply_markup)
+
+    elif query.data == 'news':
+        news_text = (
+            "Актуальные новости доступны на [нашем сайте](https://volga-it.org/news/)."
+        )
+        keyboard = [[InlineKeyboardButton("Назад", callback_data='back')]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(news_text, parse_mode="Markdown", reply_markup=reply_markup)
+
+    elif query.data == 'back':
+        await start(update, context)
+
+def main():
+    TOKEN = "8097088307:AAHJnxoTRVp0IO6EST1HVO4EQ8cAx1gt3K4"
+
+    app = ApplicationBuilder().token(TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CallbackQueryHandler(button_handler))
+
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()
